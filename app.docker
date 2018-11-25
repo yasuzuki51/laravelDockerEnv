@@ -1,0 +1,27 @@
+FROM php:7-fpm
+
+RUN apt-get update \
+    && apt-get install -y libmcrypt-dev mysql-client \
+    && docker-php-ext-install pdo_mysql && \
+
+    #iproute2, iputils-ping
+    apt-get install -y iproute2 && \
+    apt-get install -y iputils-ping && \
+
+    #zip,unzip
+    apt-get install -y zip unzip && \
+
+    #vim
+    apt-get install -y vim && \
+
+    #composer
+    curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+
+    #user追加
+    useradd -m -s /bin/bash -u 1000 lalala && \
+
+    #www.conf修正
+    sed -i 's/user\ \=\ www-data/user\ \=\ lalala/g' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/group\ \=\ www-data/group\ \=\ lalala/g' /usr/local/etc/php-fpm.d/www.conf
+WORKDIR /var/www
